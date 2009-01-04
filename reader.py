@@ -8,6 +8,7 @@ class Reader(threading.Thread):
     entry = None
     feed = None
     entries = []
+    previous = None
 
     def __init__(self):
         super(Reader, self).__init__()
@@ -43,6 +44,9 @@ class Reader(threading.Thread):
     def get_entry(self):
         return self.entry
 
+    def get_previous(self):
+        return self.previous
+
     def set_read(self, entry = None):
         if entry is None:
             entry = self.entry
@@ -61,6 +65,7 @@ class Reader(threading.Thread):
             self.update_feed()
             self.entries = self.get_entries()
 
+        self.previous = self.entry
         self.entries.remove(self.entry)
         self.entry = self.entries[0]
 
