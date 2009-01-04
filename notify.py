@@ -13,9 +13,13 @@ class Notify(pynotify.Notification):
 #        n.set_icon_from_pixbuf(icon)
         self.add_action("addstar", "Add Star", self.on_add_star_clicked)
         self.add_action("home", "Read more...", self.on_read_more_clicked)
-#        self.add_action("star_and_open", "Both...", self.on_read_more_clicked)
+        self.add_action("star_and_open", "Both", self.on_add_and_open)
         self.set_timeout(10000)
         self.connect('closed', self.on_notification_closed)
+
+    def on_add_and_open(self, widget, action):
+        reader.add_star(reader.get_previous())
+        webbrowser.open(reader.get_previous()['link'])
 
     def on_notification_closed(self, widget):
         self.closed = True

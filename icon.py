@@ -25,7 +25,7 @@ class Icon(egg.trayicon.TrayIcon):
         gobject.timeout_add(self.get_random_interval(), self.on_timeout)
 
     def get_random_interval(self):
-        return random.randrange(30000, 90000, 1000)
+        return random.randrange(90000, 180000, 1000)
 
     def on_timeout(self):
         self.on_left_clicked()
