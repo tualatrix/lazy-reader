@@ -1,3 +1,10 @@
 Lazy Reader
 
 A tiny Google Reader Client focus on providing a easiness and non-interactive reading experience.
+
+
+* depences
+  python-gnome2-extras
+  libnotify
+  notify-python
+  pygtk
