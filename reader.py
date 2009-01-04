@@ -23,7 +23,7 @@ class Reader(threading.Thread):
         self.gr.identify(**login_info)
         self.gr.login()
         self.feed = self.update_feed()
-        self.entries = list(self.feed.get_entries())
+        self.entries = self.get_entries()
         self.entry = self.entries[0]
         print 'finish parse feed'
 
@@ -37,10 +37,15 @@ class Reader(threading.Thread):
 
         return feed
 
+    def get_entries(self):
+        return list(self.feed.get_entries())
+
     def get_entry(self):
         return self.entry
 
-    def set_read(self, entry):
+    def set_read(self, entry = None):
+        if entry is None:
+            entry = self.entry
         ok = False
         while not ok:
             try:
@@ -50,5 +55,13 @@ class Reader(threading.Thread):
             else:
                 ok = True
         self.update_feed()
+
+    def iter_next(self):
+        if len(self.entries) == 0:
+            self.update_feed()
+            self.entries = self.get_entries()
+
+        self.entries.remove(self.entry)
+        self.entry = self.entries[0]
 
 reader = Reader()

@@ -3,6 +3,7 @@ import threading
 import pynotify
 import egg.trayicon
 import webbrowser
+from utils import strip_tags
 from reader import reader
 from popupmenu import PopupMenu
 
@@ -19,29 +20,31 @@ class Icon(egg.trayicon.TrayIcon):
 
         self.show_all()
 
-    def on_read_more_clicked(self, widget, entry):
-        webbrowser.open_new_tab(entry['link'])
+    def on_read_more_clicked(self, widget, action, entry):
+        print 'read more'
+        webbrowser.open(entry['link'])
 
     def on_left_clicked(self):
         entry = reader.get_entry()
         title = entry['title'] 
         summary = entry['summary']
-        if summary:
+        if summary is None:
             summary = entry['content']
         updated = entry['updated']
         author = entry['author']
 
         n = pynotify.Notification(title, 
-            '<b>%s</b> written at <i>%s</i>\n\n%s' % (author, updated, summary), None, self)
+            '<b>%s</b> written at <i>%s</i>\n\n%s' % (author, updated, strip_tags(summary)), None, self)
 
-        read_more_button = gtk.Button()
-        icon = read_more_button.render_icon(gtk.STOCK_DIALOG_INFO, gtk.ICON_SIZE_DIALOG)
-        n.set_icon_from_pixbuf(icon)
-        n.add_action("empty", "Read more...", self.on_read_more_clicked)
+#        read_more_button = gtk.Button()
+#        icon = read_more_button.render_icon(gtk.STOCK_DIALOG_INFO, gtk.ICON_SIZE_DIALOG)
+#        n.set_icon_from_pixbuf(icon)
+        n.add_action("file", "Read more...", self.on_read_more_clicked, entry)
         n.set_timeout(10000)
 
         n.show()
         reader.set_read(entry)
+        reader.iter_next()
 
     def on_eventbox_clicked(self, widget, event):
         if event.button == 1:
