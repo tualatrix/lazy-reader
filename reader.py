@@ -72,8 +72,8 @@ class Reader(threading.Thread):
     def iter_next(self):
         self.previous = self.entry
 
-        if len(self.entries) == 0:
-            self.update_feed()
+        if len(self.entries) == 1:
+            self.feed = self.update_feed()
             self.entries = self.get_entries()
 
         self.entries.remove(self.entry)
