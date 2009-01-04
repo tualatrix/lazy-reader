@@ -3,6 +3,7 @@ import random
 import gobject
 import threading
 import egg.trayicon
+import datetime
 from reader import reader
 from notify import notify
 from popupmenu import PopupMenu
@@ -37,11 +38,12 @@ class Icon(egg.trayicon.TrayIcon):
         if summary is None:
             summary = entry['content']
         updated = entry['updated']
+        updated = datetime.date.fromtimestamp(updated).isoformat()
         author = entry['author']
 
         if notify.closed is True:
             notify.update(title, 
-                '<b>%s</b> written at <i>%s</i>\n\n%s' % (author, updated, atrip_tags(summary)))
+                '<b>%s</b> written at <i>%s</i>\n\n%s' % (author, updated, strip_tags(summary)))
             notify.attach_to_widget(self)
 
     #        read_more_button = gtk.Button()
