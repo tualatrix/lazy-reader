@@ -1,16 +1,12 @@
 import gtk
+import random
+import gobject
 import threading
 import egg.trayicon
-import webbrowser
-from utils import strip_tags
 from reader import reader
-from popupmenu import PopupMenu
 from notify import notify
-
-def on_read_more_clicked(n, action, entry):
-    print 'hello world'
-    assert action == "home"
-    webbrowser.open(entry['link'])
+from popupmenu import PopupMenu
+from utils import strip_tags
 
 class Icon(egg.trayicon.TrayIcon):
     def __init__(self):
@@ -25,10 +21,14 @@ class Icon(egg.trayicon.TrayIcon):
 
         self.show_all()
 
-    def on_read_more_clicked(self, n, action, entry):
-        print 'hello world'
-        assert action == "home"
-        webbrowser.open(entry['link'])
+        gobject.timeout_add(self.get_random_interval(), self.on_timeout)
+
+    def get_random_interval(self):
+        return random.randrange(30000, 90000, 1000)
+
+    def on_timeout(self):
+        self.on_left_clicked()
+        gobject.timeout_add(self.get_random_interval(), self.on_timeout)
 
     def on_left_clicked(self):
         entry = reader.get_entry()
@@ -39,17 +39,19 @@ class Icon(egg.trayicon.TrayIcon):
         updated = entry['updated']
         author = entry['author']
 
-        notify.update(title, 
-            '<b>%s</b> written at <i>%s</i>\n\n%s' % (author, updated, strip_tags(summary)))
-        notify.attach_to_widget(self)
+        if notify.closed is True:
+            notify.update(title, 
+                '<b>%s</b> written at <i>%s</i>\n\n%s' % (author, updated, atrip_tags(summary)))
+            notify.attach_to_widget(self)
 
-#        read_more_button = gtk.Button()
-#        icon = read_more_button.render_icon(gtk.STOCK_DIALOG_INFO, gtk.ICON_SIZE_DIALOG)
-#        n.set_icon_from_pixbuf(icon)
+    #        read_more_button = gtk.Button()
+    #        icon = read_more_button.render_icon(gtk.STOCK_DIALOG_INFO, gtk.ICON_SIZE_DIALOG)
+    #        n.set_icon_from_pixbuf(icon)
 
-        notify.show()
-        reader.set_read(entry)
-        reader.iter_next()
+            notify.closed = False
+            notify.show()
+            reader.set_read(entry)
+            reader.iter_next()
 
     def on_eventbox_clicked(self, widget, event):
         if event.button == 1:

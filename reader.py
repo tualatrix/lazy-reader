@@ -47,6 +47,16 @@ class Reader(threading.Thread):
     def get_previous(self):
         return self.previous
 
+    def add_star(self, entry):
+        ok = False
+        while not ok:
+            try:
+                self.gr.add_star(entry['google_id'])
+            except:
+                print 'add start'
+            else:
+                ok = True
+
     def set_read(self, entry = None):
         if entry is None:
             entry = self.entry
@@ -58,14 +68,14 @@ class Reader(threading.Thread):
                 pass
             else:
                 ok = True
-        self.update_feed()
 
     def iter_next(self):
+        self.previous = self.entry
+
         if len(self.entries) == 0:
             self.update_feed()
             self.entries = self.get_entries()
 
-        self.previous = self.entry
         self.entries.remove(self.entry)
         self.entry = self.entries[0]
 
