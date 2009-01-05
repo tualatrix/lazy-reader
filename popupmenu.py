@@ -18,3 +18,6 @@ class PopupMenu:
     
     def exit(self,widget):
         gtk.main_quit()
+
+    def popup(self,event):
+        self.base_menu.popup(None, None, None, 0, event.time); 
