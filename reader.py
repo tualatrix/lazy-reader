@@ -1,5 +1,4 @@
 import threading
-import feedparser
 from googlereader.reader import GoogleReader
 from private import login_info
 
@@ -12,12 +11,6 @@ class Reader(threading.Thread):
 
     def __init__(self):
         super(Reader, self).__init__()
-
-#    def run(self):
-#        print 'start parse feed'
-#        parser = feedparser.parse('http://feed.feedsky.com/imtx')
-#        self.entry = parser.entries[0]
-#        print 'finish parse feed'
 
     def run(self):
         print 'start parse feed'
